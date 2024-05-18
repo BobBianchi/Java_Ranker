@@ -4,6 +4,10 @@ import bianco.games.ranker.models.Role;
 import bianco.games.ranker.models.User;
 import bianco.games.ranker.models.Board;
 
+import java.io.*;
+import java.nio.*;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -25,6 +29,8 @@ public class App {
 //            "CJ Stroud",
 //            "Jordan Love"
     ));
+
+    static String FILENAME = "submissions.txt";
 
     public static void main(String[] args) {
         User currentUser = startUp();
@@ -55,7 +61,7 @@ public class App {
             switch (input) {
                 case "1" ->
                     //do create list
-                        doCreate();
+                        doCreate(user);
                 case "2" ->
                     //do read list
                         System.out.println("Read list coming soon");
@@ -97,7 +103,7 @@ public class App {
         }
     }
 
-    static void doCreate() {
+    static void doCreate(User user) {
         //initilize variables and copy QB_MASTER
         Scanner scanner = new Scanner(System.in);
         ArrayList<String> submission = new ArrayList<>();
@@ -144,6 +150,14 @@ public class App {
             } else {
                 System.out.println("invalid input");
             }
+        }
+        File outputFile = new File(FILENAME);
+        submission.add(0, user.getName());
+        try {
+            Files.write(outputFile.toPath(), submission, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        }
+        catch (IOException ex) {
+            System.out.println("Error writing to File: " + ex.getMessage());
         }
         System.out.println("#####################");
         System.out.printf("Final submission: %s%n", submission.toString());
